@@ -17,4 +17,11 @@ public class Semaphore {
             notify();
         }
     }
+    public synchronized boolean tryAcquire() {
+        if (value > 0) {
+            value--; // Acquire the permit
+            return true;
+        }
+        return false; // No permit available
+    }
 }
