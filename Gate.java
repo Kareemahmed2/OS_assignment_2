@@ -14,6 +14,16 @@ public class Gate implements Runnable{
     ArrayList<Car> cars;
     int gateNumber;
 
+    public Gate(int i) {}
+public void addCarToList(Car c)
+{
+    cars.add(c);
+}
+
+    public ArrayList<Car> getCars() {
+        return cars;
+    }
+
     @Override
     public void run() {
 
