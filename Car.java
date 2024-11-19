@@ -5,7 +5,21 @@ public class Car implements Runnable{
     private Gate gate;
     @Override
     public void run() {
-
+try {
+            Thread.sleep(arrival_time * 1000);
+            System.out.println("Car " + carID + " from Gate " + gate.getGateNumber() + " arrived at time " + arrival_time);
+    
+            if (parkingLot.tryToPark(this)) {
+                System.out.println("Car " + carID + " from Gate " + gate.getGateNumber() + " parked. (Parking Status: " + parkingLot.getOccupiedSpots() + " spots occupied)");
+                Thread.sleep(parking_duration * 1000); 
+                parkingLot.leaveParking(this);
+                System.out.println("Car " + carID + " from Gate " + gate.getGateNumber() + " left after " + parking_duration + " units of time. (Parking Status: " + parkingLot.getOccupiedSpots() + " spots occupied)");
+            } else {
+                System.out.println("Car " + carID + " from Gate " + gate.getGateNumber() + " waiting for a spot.");
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
     
     public int getCarID() {
