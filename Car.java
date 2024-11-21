@@ -1,14 +1,30 @@
-public class Car {
+public class Car extends Thread {
     private final int carID;
     private final int arrivalTime;
     private final int parkingDuration;
     private final Gate gate;
+    private final ParkingLot parkingLot;
 
-    public Car(int carID, int arrivalTime, int parkingDuration, Gate gate) {
+    public Car(int carID, int arrivalTime, int parkingDuration, Gate gate, ParkingLot parkingLot) {
         this.carID = carID;
         this.arrivalTime = arrivalTime;
         this.parkingDuration = parkingDuration;
         this.gate = gate;
+        this.parkingLot = parkingLot;
+    }
+
+    @Override
+    public void run() {
+        try {
+            
+            Thread.sleep(arrivalTime * 1000);
+            System.out.printf("Car %d from Gate %d arrived at time %d\n", carID, gate.getGateNumber(), arrivalTime);
+
+            
+            parkingLot.chooseGateAndPark(this);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getCarID() {
