@@ -1,42 +1,51 @@
-public class Car implements Runnable{
-    private int carID;
-    private int arrival_time;
-    private int Parking_duration;
-    private Gate gate;
+public class Car extends Thread {
+    private final int carID;
+    private final int arrivalTime;
+    private final int parkingDuration;
+    private final Gate gate;
+    private final ParkingLot parkingLot;
+
+    public Car(int carID, int arrivalTime, int parkingDuration, Gate gate, ParkingLot parkingLot) {
+        this.carID = carID;
+        this.arrivalTime = arrivalTime;
+        this.parkingDuration = parkingDuration;
+        this.gate = gate;
+        this.parkingLot = parkingLot;
+    }
+
     @Override
     public void run() {
+        try {
+            
+            Thread.sleep(arrivalTime * 1000);
+            System.out.printf("Car %d from Gate %d arrived at time %d\n", carID, gate.getGateNumber(), arrivalTime);
 
+            
+            parkingLot.chooseGateAndPark(this);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getCarID() {
         return carID;
     }
 
-    public void setCarID(int carID) {
-        this.carID = carID;
-    }
-
     public int getArrival_time() {
-        return arrival_time;
-    }
-
-    public void setArrival_time(int arrival_time) {
-        this.arrival_time = arrival_time;
+        return arrivalTime;
     }
 
     public int getParking_duration() {
-        return Parking_duration;
-    }
-
-    public void setParking_duration(int parking_duration) {
-        Parking_duration = parking_duration;
+        return parkingDuration;
     }
 
     public Gate getGate() {
         return gate;
     }
 
-    public void setGate(Gate gate) {
-        this.gate = gate;
+    @Override
+    public String toString() {
+        return String.format("Car %d from Gate %d (Arrival Time: %d, Parking Duration: %d)", 
+                             carID, gate.getGateNumber(), arrivalTime, parkingDuration);
     }
 }

@@ -10,15 +10,18 @@ enum gates{
         return value;
     }
 }
-public class Gate implements Runnable{
-    ArrayList<Car> cars;
-    int gateNumber;
+public class Gate implements Runnable {
+    private ArrayList<Car> cars;
+    private int gateNumber;
 
-    public Gate(int i) {}
-public void addCarToList(Car c)
-{
-    cars.add(c);
-}
+    public Gate(int gateNumber) {
+        this.gateNumber = gateNumber;
+        this.cars = new ArrayList<>();
+    }
+
+    public void addCarToList(Car c) {
+        cars.add(c);
+    }
 
     public ArrayList<Car> getCars() {
         return cars;
@@ -26,7 +29,9 @@ public void addCarToList(Car c)
 
     @Override
     public void run() {
-
+        for (Car car : cars) {
+            new Thread(car).start();
+        }
     }
 
     public int getGateNumber() {
