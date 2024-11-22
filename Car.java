@@ -3,14 +3,13 @@ public class Car extends Thread {
     private final int arrivalTime;
     private final int parkingDuration;
     private final Gate gate;
-    private final ParkingLot parkingLot;
 
-    public Car(int carID, int arrivalTime, int parkingDuration, Gate gate, ParkingLot parkingLot) {
+    public Car(int carID, int arrivalTime, int parkingDuration, Gate gate) {
         this.carID = carID;
         this.arrivalTime = arrivalTime;
         this.parkingDuration = parkingDuration;
         this.gate = gate;
-        this.parkingLot = parkingLot;
+
     }
 
     @Override
@@ -20,8 +19,6 @@ public class Car extends Thread {
             Thread.sleep(arrivalTime * 1000);
             System.out.printf("Car %d from Gate %d arrived at time %d\n", carID, gate.getGateNumber(), arrivalTime);
 
-            
-            parkingLot.chooseGateAndPark(this);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

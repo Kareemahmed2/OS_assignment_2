@@ -1,3 +1,9 @@
+
+
+
+
+
+
 import java.util.*;
 
 public class ParkingLot {
@@ -6,37 +12,69 @@ public class ParkingLot {
     private int totalServed = 0;
     private final Object lock = new Object();
     Semaphore avialbleSlots = new Semaphore(totalSlots);
-
+    int currTime=0;
+int totalCars=0;
     List<Gate> gates=new ArrayList<>(); //Sami
-public ParkingLot()
-{
-    for(int i=0;i<3;i++) gates.add(new Gate(i)); // make for every gate an array
-}
+    public ParkingLot(int cars)
+     { totalCars=cars;
+        for(int i=0;i<3;i++) gates.add(new Gate(i)); // make for every gate an array
+
+    }
+
+
+
+
     // Method for a car to be ina gate  and park
-    public void chooseGateAndPark(Car car) throws InterruptedException {
-        int index=car.getGate().getGateNumber()-1; //gate number
-        gates.get(index).addCarToList(car); //to the gate it belong
-        if(hasSameArrivalTime(car)) //only for the prioritization
-        {
-            parkCar(gates.get(0)); // Gate 1 first
-            parkCar(gates.get(1)); // Then Gate 2
-            parkCar(gates.get(2)); // then 3
-        }
-        else
-        {
-            for (Gate gate : gates) { //park with the same sequence
-                parkCar(gate);
-            }
-        }
-        /*int time=0;
-        int max_arrival_time=20;
-        while((time == car.getArrival_time()) || (time < max_arrival_time))
-        {
-            if (index == 0) gates.get(0).addCarToList(car);
-            else if (index == 1) gates.get(1).addCarToList(car);
-            else if (index == 2) gates.get(2).addCarToList(car);
-            time++;
-        }*/
+    public void chooseGateAndPark() throws InterruptedException {
+     while(totalCars!=0)
+     {
+if(totalSlots>0)
+{
+  if(gates.getFirst().getCars().getFirst().getArrival_time()==currTime)
+  {
+     if(parkCar(gates.getFirst().getCars().getFirst()))
+     {
+         gates.getFirst().getCars().removeFirst();
+
+     }
+  }
+}
+
+     }
+
+
+
+
+
+
+
+
+
+
+
+//        int index=car.getGate().getGateNumber()-1; //gate number
+//        gates.get(index).addCarToList(car); //to the gate it belong
+//        if(hasSameArrivalTime(car)) //only for the prioritization
+//        {
+//            parkCar(gates.get(0)); // Gate 1 first
+//            parkCar(gates.get(1)); // Then Gate 2
+//            parkCar(gates.get(2)); // then 3
+//        }
+//        else
+//        {
+//            for (Gate gate : gates) { //park with the same sequence
+//                parkCar(gate);
+//            }
+//        }
+//        /*int time=0;
+//        int max_arrival_time=20;
+//        while((time == car.getArrival_time()) || (time < max_arrival_time))
+//        {
+//            if (index == 0) gates.get(0).addCarToList(car);
+//            else if (index == 1) gates.get(1).addCarToList(car);
+//            else if (index == 2) gates.get(2).addCarToList(car);
+//            time++;
+//        }*/
 
 //        if(index==0)
 //        {OrderCars(gates.get(0).getCars().getFirst());}
@@ -48,14 +86,20 @@ public ParkingLot()
     private boolean hasSameArrivalTime(Car car) //check if their are two cars with same arrivaltime in different gate
     {
         int arrivalTime=car.getArrival_time();
-        for(Gate gate:gates)
-        {
-            for(Car otherCar:gate.getCars())
-            {
-                if(car!=otherCar&&otherCar.getArrival_time()==arrivalTime)return true;
-            }
-        }
-        return false;
+//
+//        for(Gate gate:gates)
+//        {
+////            for(Car otherCar:gate.getCars())
+////            {
+////                if(car!=otherCar&&otherCar.getArrival_time()==arrivalTime)return true;
+////            }
+//
+//        }
+//        return false;
+
+        if(arrivalTime==currTime)return true;
+        else return false;
+
     }
 
 //public void OrderCars(Car car) throws InterruptedException {
@@ -74,18 +118,18 @@ public ParkingLot()
 //    }
 //}
 
-    public void parkCar(Gate gate) throws InterruptedException { //park the car
+    public boolean parkCar(Car car) throws InterruptedException { //park the car
 
-        while (!gate.getCars().isEmpty()) {
-            Car car = gate.getCars().get(0); //whatever the gate will be in i will take it's first element
+        boolean flag= false;
             synchronized (lock) {
                 System.out.printf("Car %d from Gate   arrived at time %d\n", car.getGate().getGateNumber(), car.getCarID(), car.getArrival_time());
             }
-            avialbleSlots.P(); //decrease the slots and if their no spots make the threads wait for notifying
+
+            avialbleSlots.P(car); //decrease the slots and if their no spots make the threads wait for notifying
             synchronized (lock) {
                 currentlyParked++;
                 System.out.printf("Car %d from Gate   parked. (Parking Status: %d spots occupied)\n", car.getGate().getGateNumber(), car.getCarID(), currentlyParked);
-
+               flag=true;
             }
             Thread.sleep(car.getParking_duration() * 1000L);
             synchronized (lock) {
@@ -94,12 +138,20 @@ public ParkingLot()
                 System.out.printf("Car %d left. (Currently parked: %d)\n", car.getCarID(), currentlyParked);
             }
             avialbleSlots.V(); // Release the parking spot
-            gate.getCars().remove(0);
+                               //           gate.getCars().remove(0);
 
-        }
 
+return flag;
     }
     public int getTotalServed() {
         return totalServed;
     }
 }
+
+
+
+
+
+
+
+
