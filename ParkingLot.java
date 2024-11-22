@@ -28,18 +28,17 @@ int totalCars=0;
     public void chooseGateAndPark() throws InterruptedException {
      while(totalCars!=0)
      {
-if(totalSlots>0)
-{
-  if(gates.getFirst().getCars().getFirst().getArrival_time()==currTime)
-  {
-     if(parkCar(gates.getFirst().getCars().getFirst()))
-     {
-         gates.getFirst().getCars().removeFirst();
+    for(Gate g:gates) {
+        if (g.getCars().getFirst().getArrival_time() == currTime) {
+            if (parkCar(g.getCars().getFirst())) {
+                g.getCars().removeFirst();
 
-     }
-  }
-}
+            }
+        }
+    }
 
+
+     currTime++;
      }
 
 
