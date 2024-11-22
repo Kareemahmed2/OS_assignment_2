@@ -11,7 +11,7 @@ public class Semaphore {
         if(value <=0) {
             try {
                // waitingList.add(new Car());
-                System.out.printf("Car %d from Gate " + new Car().getCarID()+" is waiting for an empty spot.\n", new Car().getCarID());
+                System.out.printf("Car %d from Gate %d is waiting for an empty spot.\n",new Car().getCarID(), new Car().getGate().getGateNumber());
                 wait();
             } catch (InterruptedException e) {}
 
